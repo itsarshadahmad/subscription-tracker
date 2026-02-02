@@ -1,0 +1,237 @@
+📌 PROMPT: Build a Subscription Tracker Web App (MVP)
+
+I want to build a web-based Subscription Tracker application that helps users manage and understand all of their recurring subscriptions in one place.
+
+This is an MVP-focused product, so keep the system simple, scalable, and clean. Do NOT include browser extensions or bank integrations yet — this version is manual entry only.
+
+🎯 Core Product Goal
+
+The app should help users:
+
+Track all their subscriptions
+
+See total monthly and yearly spending
+
+Get reminders before renewals
+
+Avoid forgotten or unwanted charges
+
+Think of it as a personal subscription manager dashboard.
+
+👤 User System
+
+Implement full authentication:
+
+User registration (email + password)
+
+Login / Logout
+
+Forgot password
+
+Each user should only see their own subscriptions
+
+User profile should store:
+
+Name
+
+Email
+
+Preferred currency
+
+Timezone
+
+➕ Subscription Management
+
+Users must be able to manually add subscriptions.
+
+Each subscription should include:
+
+Service name (text)
+
+Category (dropdown + allow custom categories later)
+
+Cost (numeric)
+
+Billing cycle:
+
+Monthly
+
+Yearly
+
+Custom (every X months)
+
+Next billing date
+
+Status:
+
+Active
+
+Trial
+
+Cancelled
+
+Optional fields:
+
+Payment method (text)
+
+Notes
+
+Users must be able to:
+
+Create a subscription
+
+Edit a subscription
+
+Mark as cancelled (do not hard delete by default)
+
+Delete if needed
+
+📊 Dashboard (Main Screen)
+
+This is the most important screen.
+
+Show summary cards at the top:
+
+Total monthly subscription cost
+
+Total yearly subscription cost (projected)
+
+Upcoming renewals (next 30 days)
+
+Number of active subscriptions
+
+Below that, show a subscription list/table with:
+
+Service name
+
+Category
+
+Cost
+
+Billing cycle
+
+Next billing date
+
+Status
+
+Allow sorting by:
+
+Cost
+
+Next billing date
+
+⏰ Renewal Reminder System
+
+Users should be able to receive email reminders before a subscription renews.
+
+Features:
+
+User selects reminder timing:
+
+1 day before
+
+3 days before
+
+7 days before
+
+System runs a scheduled job (cron) daily
+
+Emails are sent if a subscription renewal date matches reminder settings
+
+🗂 Categories
+
+Provide default categories:
+
+Entertainment
+
+Work / SaaS
+
+Education
+
+Utilities
+
+Health & Fitness
+
+Shopping
+
+Other
+
+Subscriptions must belong to one category.
+
+🧪 Trial Tracking
+
+Support free trials:
+
+If subscription status = Trial:
+
+User sets trial end date
+
+System treats trial end date as first billing date
+
+Show warning on dashboard if trials end within 7 days
+
+🔍 Search & Filters
+
+On the subscription list page, allow:
+
+Search by service name
+
+Filter by:
+
+Category
+
+Status (Active / Trial / Cancelled)
+
+Billing cycle
+
+🔐 Data & Security Rules
+
+Do NOT store any card or banking details
+
+All data must be tied securely to authenticated users
+
+Provide option to export subscription data (CSV)
+
+User can delete account and all associated data
+
+🧱 Suggested Tech Stack (You may follow or improve)
+
+Frontend:
+
+React or Next.js
+
+Backend:
+
+Node.js with Express or NestJS
+
+Database:
+
+PostgreSQL
+
+Authentication:
+
+JWT-based or managed auth service
+
+Background Jobs:
+
+Cron job or queue system for reminder emails
+
+Email:
+
+Any transactional email provider
+
+🚀 Deliverables Expected
+
+Database schema design
+
+API endpoint structure
+
+Authentication flow
+
+Subscription CRUD system
+
+Dashboard logic (totals, upcoming renewals)
+
+Reminder email system design
+
+Keep the architecture modular so future features like browser extensions, bank sync, and analytics can be added later.
