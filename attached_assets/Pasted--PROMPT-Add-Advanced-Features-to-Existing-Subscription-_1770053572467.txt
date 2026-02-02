@@ -1,0 +1,206 @@
+📌 PROMPT: Add Advanced Features to Existing Subscription Tracker
+
+I already have a working MVP of a Subscription Tracker Web App with:
+
+User authentication
+
+Manual subscription CRUD
+
+Categories
+
+Dashboard with totals
+
+Email renewal reminders
+
+Trial tracking
+
+Search & filters
+
+Now I want to expand this into a more intelligent and insight-driven product.
+Do NOT add browser extensions, bank syncing, or email scraping. Keep it web app only.
+
+📊 1. Advanced Spending Insights
+
+Build an Insights Dashboard that helps users understand their spending behavior.
+
+Features:
+
+Show:
+
+Total monthly spending
+
+Total yearly projected spending
+
+Average subscription cost
+
+Most expensive subscription
+
+Category breakdown:
+
+Total spend per category
+
+Percentage of total spending per category
+
+Highlight:
+
+“Top 3 most expensive subscriptions”
+
+Use charts/graphs where helpful.
+
+📈 2. Spending Trends Over Time
+
+Add historical tracking.
+
+Requirements:
+
+Store monthly snapshots of total subscription cost per user
+
+Show a chart:
+
+Monthly subscription spending trend
+
+Growth or reduction over time
+
+This should help users see if their subscription costs are increasing.
+
+⚠️ 3. Smart Alerts & Warnings
+
+Introduce a “Subscription Health” system.
+
+Alert types:
+
+Price Increase Alert
+
+If user edits a subscription and increases cost, log history
+
+Show: “Your Netflix cost increased by ₹100”
+
+Unused Subscription Reminder
+
+If a subscription hasn’t been updated or viewed in 6+ months:
+
+Show: “Are you still using this subscription?”
+
+High Spending Warning
+
+If monthly total crosses a threshold (user-defined or default)
+
+Show dashboard warning
+
+🔁 4. Subscription Cost History
+
+Track changes over time.
+
+For each subscription:
+
+Maintain cost history log:
+
+Old price
+
+New price
+
+Date changed
+
+Display on subscription detail page:
+
+Price history timeline
+
+📅 5. Calendar View
+
+Add a calendar-style page showing:
+
+Upcoming billing dates as events
+
+Trial ending dates
+
+Filter by:
+
+This week
+
+This month
+
+Clicking a date should show subscriptions renewing that day.
+
+💱 6. Multi-Currency Support
+
+Enhance system for global users.
+
+Features:
+
+Each subscription can store:
+
+Original currency
+
+Converted value in user’s preferred currency
+
+User sets preferred currency in profile
+
+Use exchange rate API (mock or real)
+
+All dashboard totals should use preferred currency.
+
+📤 7. Data Export & Reports
+
+Allow users to export:
+
+CSV of all subscriptions
+
+Monthly spending report (CSV or PDF-ready data)
+
+🧠 8. Subscription Notes & Attachments
+
+Enhance subscription detail page:
+
+Users can:
+
+Add detailed notes (e.g., login email used, renewal tricks)
+
+Upload small attachments (like invoice PDFs) (optional if storage available)
+
+👨‍👩‍👧 9. Household / Shared View (Basic Version)
+
+Allow users to mark a subscription as:
+
+Personal
+
+Shared
+
+Show breakdown:
+
+Personal spending
+
+Shared spending
+
+(No full multi-user accounts yet — just tagging)
+
+🎨 10. UX Improvements
+
+Add quality-of-life features:
+
+Dark mode
+
+Collapsible sidebar
+
+Quick “Add Subscription” button from any page
+
+Empty states with helpful guidance
+
+🧱 Technical Expectations
+
+The system should now support:
+
+Historical data tables
+
+Aggregation queries for insights
+
+Scheduled jobs for smart alerts
+
+Scalable schema for future AI-based insights
+
+Keep architecture clean and extensible for future features like:
+
+Browser extensions
+
+Bank integrations
+
+AI spending optimization
