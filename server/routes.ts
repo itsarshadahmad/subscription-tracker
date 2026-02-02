@@ -1,6 +1,6 @@
 import type { Express } from "express";
-import { createServer, type Server } from "http";
-import { setupAuth, registerAuthRoutes, isAuthenticated } from "./replit_integrations/auth";
+import type { Server } from "http";
+import { setupAuth, isAuthenticated } from "./auth";
 import { storage } from "./storage";
 import { insertSubscriptionSchema, insertUserPreferencesSchema } from "@shared/schema";
 import { format } from "date-fns";
@@ -10,13 +10,11 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
   await setupAuth(app);
-  registerAuthRoutes(app);
-
   await storage.seedDefaultCategories();
 
   app.get("/api/subscriptions", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const subs = await storage.getSubscriptions(userId);
       res.json(subs);
     } catch (error) {
@@ -27,7 +25,7 @@ export async function registerRoutes(
 
   app.post("/api/subscriptions", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const parsed = insertSubscriptionSchema.parse({
         ...req.body,
         userId,
@@ -42,7 +40,7 @@ export async function registerRoutes(
 
   app.patch("/api/subscriptions/:id", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { id } = req.params;
       
       const existing = await storage.getSubscription(id, userId);
@@ -76,7 +74,7 @@ export async function registerRoutes(
 
   app.delete("/api/subscriptions/:id", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { id } = req.params;
       
       const existing = await storage.getSubscription(id, userId);
@@ -94,7 +92,7 @@ export async function registerRoutes(
 
   app.get("/api/subscriptions/export", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const subs = await storage.getSubscriptions(userId);
       const cats = await storage.getCategories(userId);
       
@@ -126,7 +124,7 @@ export async function registerRoutes(
 
   app.get("/api/categories", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const cats = await storage.getCategories(userId);
       res.json(cats);
     } catch (error) {
@@ -137,7 +135,7 @@ export async function registerRoutes(
 
   app.post("/api/categories", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { name } = req.body;
       
       if (!name || typeof name !== "string" || name.trim().length === 0) {
@@ -158,7 +156,7 @@ export async function registerRoutes(
 
   app.get("/api/preferences", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       let prefs = await storage.getPreferences(userId);
       
       if (!prefs) {
@@ -178,7 +176,7 @@ export async function registerRoutes(
 
   app.put("/api/preferences", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const parsed = insertUserPreferencesSchema.parse({
         ...req.body,
         userId,
@@ -193,7 +191,7 @@ export async function registerRoutes(
 
   app.delete("/api/account", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       await storage.deleteUserData(userId);
       res.status(204).send();
     } catch (error) {

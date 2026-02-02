@@ -27,7 +27,7 @@ Preferred communication style: Simple, everyday language.
 - **Build Tool**: Vite
 
 The frontend follows a component-based architecture with:
-- Pages in `client/src/pages/` (dashboard, settings, landing, not-found)
+- Pages in `client/src/pages/` (dashboard, settings, landing, login, signup, not-found)
 - Reusable components in `client/src/components/`
 - Custom hooks in `client/src/hooks/`
 - Utility functions in `client/src/lib/`
@@ -41,6 +41,7 @@ The frontend follows a component-based architecture with:
 The server follows a modular structure:
 - `server/index.ts` - Express app setup and middleware
 - `server/routes.ts` - API route definitions
+- `server/auth.ts` - Authentication setup and routes
 - `server/storage.ts` - Database access layer with interface abstraction
 - `server/db.ts` - Database connection setup
 
@@ -51,33 +52,59 @@ The server follows a modular structure:
 - **Migrations**: Drizzle Kit with `drizzle-kit push` command
 
 **Database Tables:**
-- `users` - User accounts (managed by Replit Auth)
+- `users` - User accounts with email, password (hashed), OAuth provider info
 - `sessions` - Session storage for authentication
 - `subscriptions` - User subscription records
 - `categories` - Subscription categories (default + user-created)
 - `userPreferences` - User settings (currency, timezone, display name)
 
-### Authentication
-- **Provider**: Replit Auth (OpenID Connect)
+### Authentication (Portable - works anywhere)
+- **Email/Password**: bcrypt password hashing, Passport.js local strategy
+- **Google OAuth**: Passport.js Google strategy (optional)
+- **GitHub OAuth**: Passport.js GitHub strategy (optional)
 - **Session Storage**: PostgreSQL via connect-pg-simple
-- **Implementation**: Located in `server/replit_integrations/auth/`
+- **Implementation**: `server/auth.ts`
 
-The auth system uses Passport.js with OIDC strategy, storing sessions in the database and user information synced from Replit's identity provider.
+**Auth Routes:**
+- POST `/api/auth/signup` - Create new account with email/password
+- POST `/api/auth/login` - Login with email/password
+- POST `/api/auth/logout` - End session
+- GET `/api/auth/user` - Get current authenticated user
+- GET `/api/auth/google` - Start Google OAuth flow
+- GET `/api/auth/github` - Start GitHub OAuth flow
+
+## Deployment / Portability
+
+This app is fully portable and can be deployed anywhere. To deploy on another platform:
+
+1. **Database**: Use any PostgreSQL provider (Neon, Supabase, Railway, Render, AWS RDS)
+2. **Environment Variables**:
+   - `DATABASE_URL` - PostgreSQL connection string (required)
+   - `SESSION_SECRET` - Random secret string for session encryption (required)
+   - `GOOGLE_CLIENT_ID` & `GOOGLE_CLIENT_SECRET` - For Google OAuth (optional)
+   - `GITHUB_CLIENT_ID` & `GITHUB_CLIENT_SECRET` - For GitHub OAuth (optional)
+3. **Run migrations**: `npm run db:push`
+4. **Start server**: `npm run dev` (development) or build and run for production
 
 ## External Dependencies
 
 ### Third-Party Services
-- **Replit Auth**: User authentication via OpenID Connect
 - **PostgreSQL**: Primary database (DATABASE_URL environment variable required)
+- **Google OAuth**: Optional - requires Google Cloud Console credentials
+- **GitHub OAuth**: Optional - requires GitHub Developer App credentials
 
 ### Key NPM Packages
-- **UI**: @radix-ui/* primitives, lucide-react icons, class-variance-authority
+- **UI**: @radix-ui/* primitives, lucide-react icons, react-icons, class-variance-authority
 - **Data**: drizzle-orm, @tanstack/react-query, zod
-- **Auth**: passport, openid-client, express-session, connect-pg-simple
+- **Auth**: passport, passport-local, passport-google-oauth20, passport-github2, bcryptjs, express-session, connect-pg-simple
 - **Utilities**: date-fns for date manipulation
 
 ### Environment Variables Required
 - `DATABASE_URL` - PostgreSQL connection string
 - `SESSION_SECRET` - Secret for session encryption
-- `ISSUER_URL` - Replit OIDC issuer (defaults to https://replit.com/oidc)
-- `REPL_ID` - Replit environment identifier
+
+### Environment Variables Optional (for OAuth)
+- `GOOGLE_CLIENT_ID` - Google OAuth client ID
+- `GOOGLE_CLIENT_SECRET` - Google OAuth client secret
+- `GITHUB_CLIENT_ID` - GitHub OAuth client ID
+- `GITHUB_CLIENT_SECRET` - GitHub OAuth client secret

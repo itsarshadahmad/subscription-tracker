@@ -17,7 +17,7 @@ export default function Landing() {
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <Button asChild data-testid="button-login-nav">
-              <a href="/api/login">Sign In</a>
+              <a href="/login">Sign In</a>
             </Button>
           </div>
         </div>
@@ -38,7 +38,7 @@ export default function Landing() {
               </p>
               <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
                 <Button size="lg" asChild data-testid="button-get-started">
-                  <a href="/api/login" className="gap-2">
+                  <a href="/signup" className="gap-2">
                     Get Started Free
                     <ArrowRight className="h-4 w-4" />
                   </a>
@@ -131,7 +131,7 @@ export default function Landing() {
                 Join thousands of users who have simplified their subscription management
               </p>
               <Button size="lg" className="mt-8" asChild data-testid="button-cta-bottom">
-                <a href="/api/login" className="gap-2">
+                <a href="/signup" className="gap-2">
                   Start Tracking Now
                   <ArrowRight className="h-4 w-4" />
                 </a>

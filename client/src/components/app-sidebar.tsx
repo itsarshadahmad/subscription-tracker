@@ -13,6 +13,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 const navItems = [
   {
@@ -28,8 +30,18 @@ const navItems = [
 ];
 
 export function AppSidebar() {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const { user } = useAuth();
+
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest("POST", "/api/auth/logout");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      navigate("/");
+    },
+  });
 
   const displayName = user?.firstName
     ? `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`
@@ -88,11 +100,14 @@ export function AppSidebar() {
         </div>
         <SidebarMenu className="mt-3">
           <SidebarMenuItem>
-            <SidebarMenuButton asChild data-testid="button-logout">
-              <a href="/api/logout" className="text-muted-foreground">
-                <LogOut className="h-4 w-4" />
-                <span>Sign out</span>
-              </a>
+            <SidebarMenuButton
+              onClick={() => logoutMutation.mutate()}
+              disabled={logoutMutation.isPending}
+              className="text-muted-foreground cursor-pointer"
+              data-testid="button-logout"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>{logoutMutation.isPending ? "Signing out..." : "Sign out"}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
