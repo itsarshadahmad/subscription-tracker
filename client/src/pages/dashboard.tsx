@@ -366,7 +366,7 @@ export default function Dashboard() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+        <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
           <TabsTrigger value="subscriptions" className="gap-1.5" data-testid="tab-subscriptions">
             <CreditCard className="h-4 w-4 hidden sm:block" />
             <span>Subscriptions</span>
@@ -382,6 +382,10 @@ export default function Dashboard() {
           <TabsTrigger value="trends" className="gap-1.5" data-testid="tab-trends">
             <TrendingUp className="h-4 w-4 hidden sm:block" />
             <span>Trends</span>
+          </TabsTrigger>
+          <TabsTrigger value="alerts" className="gap-1.5" data-testid="tab-alerts">
+            <Bell className="h-4 w-4 hidden sm:block" />
+            <span>Alerts</span>
           </TabsTrigger>
         </TabsList>
 
@@ -656,6 +660,10 @@ export default function Dashboard() {
 
         <TabsContent value="trends" className="space-y-4">
           <TrendsChart />
+        </TabsContent>
+
+        <TabsContent value="alerts" className="space-y-4">
+          <AlertsPanel />
         </TabsContent>
       </Tabs>
 

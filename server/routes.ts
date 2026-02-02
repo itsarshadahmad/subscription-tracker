@@ -498,9 +498,13 @@ export async function registerRoutes(
   app.put("/api/preferences", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.id;
+      const { monthlySpendingLimit, ...rest } = req.body;
       const parsed = insertUserPreferencesSchema.parse({
-        ...req.body,
+        ...rest,
         userId,
+        monthlySpendingLimit: monthlySpendingLimit && monthlySpendingLimit !== "" 
+          ? String(parseFloat(monthlySpendingLimit)) 
+          : null,
       });
       const prefs = await storage.upsertPreferences(parsed);
       res.json(prefs);
