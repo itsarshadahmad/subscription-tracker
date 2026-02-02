@@ -17,10 +17,22 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/auth-utils";
 
+const CURRENCIES = [
+  { code: "USD", symbol: "$", name: "US Dollar" },
+  { code: "EUR", symbol: "€", name: "Euro" },
+  { code: "GBP", symbol: "£", name: "British Pound" },
+  { code: "INR", symbol: "₹", name: "Indian Rupee" },
+  { code: "CAD", symbol: "C$", name: "Canadian Dollar" },
+  { code: "AUD", symbol: "A$", name: "Australian Dollar" },
+  { code: "JPY", symbol: "¥", name: "Japanese Yen" },
+  { code: "CNY", symbol: "¥", name: "Chinese Yuan" },
+];
+
 const formSchema = z.object({
   serviceName: z.string().min(1, "Service name is required"),
   categoryId: z.string().optional(),
   cost: z.string().min(1, "Cost is required").refine(val => !isNaN(parseFloat(val)) && parseFloat(val) >= 0, "Must be a valid positive number"),
+  originalCurrency: z.string().optional(),
   billingCycle: z.enum(["monthly", "yearly", "custom"]),
   customMonths: z.number().min(1).optional().nullable(),
   nextBillingDate: z.date({ required_error: "Next billing date is required" }),
@@ -29,6 +41,7 @@ const formSchema = z.object({
   paymentMethod: z.string().optional(),
   notes: z.string().optional(),
   reminderDays: z.number().optional().nullable(),
+  sharingType: z.enum(["personal", "shared"]).optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -74,6 +87,7 @@ export function SubscriptionDialog({ open, onOpenChange, subscription, categorie
       serviceName: "",
       categoryId: undefined,
       cost: "",
+      originalCurrency: "USD",
       billingCycle: "monthly",
       customMonths: null,
       nextBillingDate: new Date(),
@@ -82,6 +96,7 @@ export function SubscriptionDialog({ open, onOpenChange, subscription, categorie
       paymentMethod: "",
       notes: "",
       reminderDays: null,
+      sharingType: "personal",
     },
   });
 
@@ -91,6 +106,7 @@ export function SubscriptionDialog({ open, onOpenChange, subscription, categorie
         serviceName: subscription.serviceName,
         categoryId: subscription.categoryId || undefined,
         cost: subscription.cost,
+        originalCurrency: subscription.originalCurrency || "USD",
         billingCycle: subscription.billingCycle,
         customMonths: subscription.customMonths,
         nextBillingDate: parseISO(subscription.nextBillingDate),
@@ -99,12 +115,14 @@ export function SubscriptionDialog({ open, onOpenChange, subscription, categorie
         paymentMethod: subscription.paymentMethod || "",
         notes: subscription.notes || "",
         reminderDays: subscription.reminderDays,
+        sharingType: subscription.sharingType || "personal",
       });
     } else if (open) {
       form.reset({
         serviceName: "",
         categoryId: undefined,
         cost: "",
+        originalCurrency: "USD",
         billingCycle: "monthly",
         customMonths: null,
         nextBillingDate: new Date(),
@@ -113,6 +131,7 @@ export function SubscriptionDialog({ open, onOpenChange, subscription, categorie
         paymentMethod: "",
         notes: "",
         reminderDays: null,
+        sharingType: "personal",
       });
     }
     setShowNewCategory(false);
@@ -246,19 +265,45 @@ export function SubscriptionDialog({ open, onOpenChange, subscription, categorie
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="cost"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Cost</FormLabel>
-                    <FormControl>
-                      <Input type="number" step="0.01" placeholder="9.99" {...field} data-testid="input-cost" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Cost</label>
+                <div className="flex gap-2">
+                  <FormField
+                    control={form.control}
+                    name="originalCurrency"
+                    render={({ field }) => (
+                      <FormItem className="w-24">
+                        <Select onValueChange={field.onChange} value={field.value || "USD"}>
+                          <FormControl>
+                            <SelectTrigger data-testid="select-currency" className="h-9">
+                              <SelectValue placeholder="USD" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {CURRENCIES.map((currency) => (
+                              <SelectItem key={currency.code} value={currency.code}>
+                                {currency.code}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="cost"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormControl>
+                          <Input type="number" step="0.01" placeholder="9.99" {...field} data-testid="input-cost" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
 
               <FormField
                 control={form.control}
@@ -343,6 +388,28 @@ export function SubscriptionDialog({ open, onOpenChange, subscription, categorie
                         <SelectItem value="active">Active</SelectItem>
                         <SelectItem value="trial">Trial</SelectItem>
                         <SelectItem value="cancelled">Cancelled</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="sharingType"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Ownership</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value || "personal"}>
+                      <FormControl>
+                        <SelectTrigger data-testid="select-sharing-type">
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="personal">Personal</SelectItem>
+                        <SelectItem value="shared">Shared / Household</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

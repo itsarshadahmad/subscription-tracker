@@ -6,13 +6,18 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, DollarSign, Calendar, CreditCard, AlertTriangle, Pencil, Trash2, ArrowUpDown, Download, MoreVertical } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Plus, Search, DollarSign, Calendar, CreditCard, AlertTriangle, Pencil, Trash2, ArrowUpDown, Download, MoreVertical, PieChart, TrendingUp, Bell } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useState, useMemo, useCallback } from "react";
 import { format, differenceInDays, parseISO, addMonths, addYears } from "date-fns";
 import type { Subscription, Category, UserPreferences } from "@shared/schema";
 import { SubscriptionDialog } from "@/components/subscription-dialog";
 import { DeleteConfirmDialog } from "@/components/delete-confirm-dialog";
+import { InsightsPanel } from "@/components/insights-panel";
+import { AlertsPanel } from "@/components/alerts-panel";
+import { CalendarView } from "@/components/calendar-view";
+import { TrendsChart } from "@/components/trends-chart";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/auth-utils";
@@ -75,6 +80,7 @@ function getNextBillingDateFromToday(nextBillingDate: string, billingCycle: stri
 
 export default function Dashboard() {
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState("subscriptions");
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -359,10 +365,31 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      <Card>
-        <CardHeader className="pb-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <CardTitle className="text-lg sm:text-xl">Subscriptions</CardTitle>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+          <TabsTrigger value="subscriptions" className="gap-1.5" data-testid="tab-subscriptions">
+            <CreditCard className="h-4 w-4 hidden sm:block" />
+            <span>Subscriptions</span>
+          </TabsTrigger>
+          <TabsTrigger value="insights" className="gap-1.5" data-testid="tab-insights">
+            <PieChart className="h-4 w-4 hidden sm:block" />
+            <span>Insights</span>
+          </TabsTrigger>
+          <TabsTrigger value="calendar" className="gap-1.5" data-testid="tab-calendar">
+            <Calendar className="h-4 w-4 hidden sm:block" />
+            <span>Calendar</span>
+          </TabsTrigger>
+          <TabsTrigger value="trends" className="gap-1.5" data-testid="tab-trends">
+            <TrendingUp className="h-4 w-4 hidden sm:block" />
+            <span>Trends</span>
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="subscriptions" className="space-y-4">
+          <Card>
+            <CardHeader className="pb-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <CardTitle className="text-lg sm:text-xl">Subscriptions</CardTitle>
             <div className="flex items-center gap-2">
               <Button 
                 onClick={() => exportMutation.mutate()} 
@@ -609,7 +636,28 @@ export default function Dashboard() {
             </>
           )}
         </CardContent>
-      </Card>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="insights" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="md:col-span-2">
+              <InsightsPanel />
+            </div>
+            <div>
+              <AlertsPanel />
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="calendar" className="space-y-4">
+          <CalendarView />
+        </TabsContent>
+
+        <TabsContent value="trends" className="space-y-4">
+          <TrendsChart />
+        </TabsContent>
+      </Tabs>
 
       <SubscriptionDialog
         open={dialogOpen}

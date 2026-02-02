@@ -44,6 +44,7 @@ const formSchema = z.object({
   displayName: z.string().optional(),
   currency: z.string().min(1, "Please select a currency"),
   timezone: z.string().min(1, "Please select a timezone"),
+  monthlySpendingLimit: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -62,6 +63,7 @@ export default function Settings() {
       displayName: "",
       currency: "USD",
       timezone: "America/New_York",
+      monthlySpendingLimit: "",
     },
   });
 
@@ -71,6 +73,7 @@ export default function Settings() {
         displayName: preferences.displayName || "",
         currency: preferences.currency || "USD",
         timezone: preferences.timezone || "America/New_York",
+        monthlySpendingLimit: preferences.monthlySpendingLimit || "",
       });
     }
   }, [preferences, form]);
@@ -212,6 +215,29 @@ export default function Settings() {
                   )}
                 />
               </div>
+
+              <FormField
+                control={form.control}
+                name="monthlySpendingLimit"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Monthly Spending Limit (Optional)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        placeholder="e.g., 100.00"
+                        {...field}
+                        data-testid="input-spending-limit"
+                      />
+                    </FormControl>
+                    <p className="text-xs text-muted-foreground">
+                      Set a monthly limit to receive alerts when your spending exceeds this amount
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <Button type="submit" disabled={mutation.isPending} data-testid="button-save-settings" className="w-full sm:w-auto">
                 {mutation.isPending ? "Saving..." : "Save Changes"}
