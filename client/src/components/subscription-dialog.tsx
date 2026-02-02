@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Plus } from "lucide-react";
+import { CalendarIcon, Plus, X } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { Subscription, Category } from "@shared/schema";
@@ -156,9 +156,9 @@ export function SubscriptionDialog({ open, onOpenChange, subscription, categorie
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{isEditing ? "Edit Subscription" : "Add Subscription"}</DialogTitle>
+      <DialogContent className="w-[95vw] max-w-lg max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+        <DialogHeader className="pb-2">
+          <DialogTitle className="text-xl">{isEditing ? "Edit Subscription" : "Add Subscription"}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -189,11 +189,12 @@ export function SubscriptionDialog({ open, onOpenChange, subscription, categorie
                         placeholder="New category name"
                         value={newCategoryName}
                         onChange={(e) => setNewCategoryName(e.target.value)}
+                        className="flex-1"
                         data-testid="input-new-category"
                       />
                       <Button
                         type="button"
-                        size="sm"
+                        size="default"
                         onClick={() => {
                           if (newCategoryName.trim()) {
                             categoryMutation.mutate(newCategoryName.trim());
@@ -207,13 +208,13 @@ export function SubscriptionDialog({ open, onOpenChange, subscription, categorie
                       <Button
                         type="button"
                         variant="ghost"
-                        size="sm"
+                        size="icon"
                         onClick={() => {
                           setShowNewCategory(false);
                           setNewCategoryName("");
                         }}
                       >
-                        Cancel
+                        <X className="h-4 w-4" />
                       </Button>
                     </div>
                   ) : (
@@ -246,7 +247,7 @@ export function SubscriptionDialog({ open, onOpenChange, subscription, categorie
               )}
             />
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="cost"
@@ -308,7 +309,7 @@ export function SubscriptionDialog({ open, onOpenChange, subscription, categorie
               />
             )}
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="nextBillingDate"
@@ -321,13 +322,13 @@ export function SubscriptionDialog({ open, onOpenChange, subscription, categorie
                           <Button
                             variant="outline"
                             className={cn(
-                              "justify-start text-left font-normal",
+                              "w-full justify-start text-left font-normal",
                               !field.value && "text-muted-foreground"
                             )}
                             data-testid="button-next-billing-date"
                           >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {field.value ? format(field.value, "MMM d, yyyy") : "Pick a date"}
+                            <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
+                            <span className="truncate">{field.value ? format(field.value, "MMM d, yyyy") : "Pick a date"}</span>
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
@@ -382,13 +383,13 @@ export function SubscriptionDialog({ open, onOpenChange, subscription, categorie
                           <Button
                             variant="outline"
                             className={cn(
-                              "justify-start text-left font-normal",
+                              "w-full justify-start text-left font-normal",
                               !field.value && "text-muted-foreground"
                             )}
                             data-testid="button-trial-end-date"
                           >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {field.value ? format(field.value, "MMM d, yyyy") : "Pick a date"}
+                            <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
+                            <span className="truncate">{field.value ? format(field.value, "MMM d, yyyy") : "Pick a date"}</span>
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
@@ -455,19 +456,19 @@ export function SubscriptionDialog({ open, onOpenChange, subscription, categorie
                 <FormItem>
                   <FormLabel>Notes (Optional)</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Any additional notes..." {...field} data-testid="input-notes" />
+                    <Textarea placeholder="Any additional notes..." className="min-h-[80px]" {...field} data-testid="input-notes" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <div className="flex justify-end gap-2 pt-4">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4 border-t">
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
                 Cancel
               </Button>
-              <Button type="submit" disabled={mutation.isPending} data-testid="button-save-subscription">
-                {mutation.isPending ? "Saving..." : (isEditing ? "Update" : "Add")}
+              <Button type="submit" disabled={mutation.isPending} className="w-full sm:w-auto" data-testid="button-save-subscription">
+                {mutation.isPending ? "Saving..." : (isEditing ? "Update" : "Add Subscription")}
               </Button>
             </div>
           </form>

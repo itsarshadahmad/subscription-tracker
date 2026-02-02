@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -59,22 +58,22 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background/80 backdrop-blur-md">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4 gap-4">
+        <div className="container mx-auto flex h-14 sm:h-16 items-center justify-between px-4 gap-4">
           <a href="/" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-              <CreditCard className="h-5 w-5 text-primary-foreground" />
+            <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg bg-primary">
+              <CreditCard className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold">SubTrack</span>
+            <span className="text-lg sm:text-xl font-bold">SubTrack</span>
           </a>
           <ThemeToggle />
         </div>
       </nav>
 
-      <main className="flex-1 flex items-center justify-center pt-16 p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Welcome back</CardTitle>
-            <CardDescription>Sign in to your account to continue</CardDescription>
+      <main className="flex-1 flex items-center justify-center pt-14 sm:pt-16 p-4">
+        <Card className="w-full max-w-sm sm:max-w-md">
+          <CardHeader className="text-center space-y-1 pb-4">
+            <CardTitle className="text-xl sm:text-2xl">Welcome back</CardTitle>
+            <CardDescription className="text-sm">Sign in to your account to continue</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-2">
@@ -119,6 +118,7 @@ export default function Login() {
                         <Input
                           type="email"
                           placeholder="you@example.com"
+                          autoComplete="email"
                           data-testid="input-email"
                           {...field}
                         />
@@ -137,6 +137,7 @@ export default function Login() {
                         <Input
                           type="password"
                           placeholder="Enter your password"
+                          autoComplete="current-password"
                           data-testid="input-password"
                           {...field}
                         />
@@ -163,10 +164,10 @@ export default function Login() {
               </form>
             </Form>
           </CardContent>
-          <CardFooter className="flex justify-center">
+          <CardFooter className="flex justify-center pt-2">
             <p className="text-sm text-muted-foreground">
               Don't have an account?{" "}
-              <a href="/signup" className="text-primary hover:underline" data-testid="link-signup">
+              <a href="/signup" className="text-primary font-medium hover:underline" data-testid="link-signup">
                 Sign up
               </a>
             </p>

@@ -72,22 +72,22 @@ export default function Signup() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background/80 backdrop-blur-md">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4 gap-4">
+        <div className="container mx-auto flex h-14 sm:h-16 items-center justify-between px-4 gap-4">
           <a href="/" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-              <CreditCard className="h-5 w-5 text-primary-foreground" />
+            <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg bg-primary">
+              <CreditCard className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold">SubTrack</span>
+            <span className="text-lg sm:text-xl font-bold">SubTrack</span>
           </a>
           <ThemeToggle />
         </div>
       </nav>
 
-      <main className="flex-1 flex items-center justify-center pt-16 p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Create an account</CardTitle>
-            <CardDescription>Start tracking your subscriptions today</CardDescription>
+      <main className="flex-1 flex items-center justify-center pt-14 sm:pt-16 p-4 py-8">
+        <Card className="w-full max-w-sm sm:max-w-md">
+          <CardHeader className="text-center space-y-1 pb-4">
+            <CardTitle className="text-xl sm:text-2xl">Create an account</CardTitle>
+            <CardDescription className="text-sm">Start tracking your subscriptions today</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-2">
@@ -122,7 +122,7 @@ export default function Signup() {
 
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="firstName"
@@ -132,6 +132,7 @@ export default function Signup() {
                         <FormControl>
                           <Input
                             placeholder="John"
+                            autoComplete="given-name"
                             data-testid="input-first-name"
                             {...field}
                           />
@@ -149,6 +150,7 @@ export default function Signup() {
                         <FormControl>
                           <Input
                             placeholder="Doe"
+                            autoComplete="family-name"
                             data-testid="input-last-name"
                             {...field}
                           />
@@ -168,6 +170,7 @@ export default function Signup() {
                         <Input
                           type="email"
                           placeholder="you@example.com"
+                          autoComplete="email"
                           data-testid="input-email"
                           {...field}
                         />
@@ -186,6 +189,7 @@ export default function Signup() {
                         <Input
                           type="password"
                           placeholder="At least 8 characters"
+                          autoComplete="new-password"
                           data-testid="input-password"
                           {...field}
                         />
@@ -204,6 +208,7 @@ export default function Signup() {
                         <Input
                           type="password"
                           placeholder="Confirm your password"
+                          autoComplete="new-password"
                           data-testid="input-confirm-password"
                           {...field}
                         />
@@ -230,10 +235,10 @@ export default function Signup() {
               </form>
             </Form>
           </CardContent>
-          <CardFooter className="flex justify-center">
+          <CardFooter className="flex justify-center pt-2">
             <p className="text-sm text-muted-foreground">
               Already have an account?{" "}
-              <a href="/login" className="text-primary hover:underline" data-testid="link-login">
+              <a href="/login" className="text-primary font-medium hover:underline" data-testid="link-login">
                 Sign in
               </a>
             </p>
