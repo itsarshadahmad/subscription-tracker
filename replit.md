@@ -11,6 +11,16 @@ SubTrack is a web-based subscription tracking application that helps users manag
 - Categorize subscriptions for better organization
 - User preferences for currency and timezone
 
+**Advanced Features (Feb 2026):**
+- **Spending Insights**: Category breakdown, top subscriptions, personal vs shared spending analysis
+- **Trend Analysis**: Historical spending charts showing monthly/yearly trends
+- **Smart Alerts**: Automatic notifications for price increases, unused subscriptions, high spending warnings, trial expirations
+- **Cost History**: Automatic tracking of price changes with timeline view
+- **Calendar View**: Monthly billing calendar showing upcoming renewal dates
+- **Multi-Currency Support**: Track subscriptions in different currencies with user's preferred display currency
+- **Household/Shared Subscriptions**: Tag subscriptions as personal or shared with breakdown view
+- **Spending Limits**: Set monthly budget limits with visual progress tracking and alerts
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -54,9 +64,12 @@ The server follows a modular structure:
 **Database Tables:**
 - `users` - User accounts with email, password (hashed), OAuth provider info
 - `sessions` - Session storage for authentication
-- `subscriptions` - User subscription records
+- `subscriptions` - User subscription records (with originalCurrency, sharingType, lastViewedAt)
 - `categories` - Subscription categories (default + user-created)
-- `userPreferences` - User settings (currency, timezone, display name)
+- `userPreferences` - User settings (currency, timezone, displayName, monthlySpendingLimit)
+- `cost_history` - Tracks price changes for subscriptions over time
+- `monthly_snapshots` - Aggregated monthly spending data for trend analysis
+- `alerts` - Smart alerts for price increases, unused subscriptions, spending warnings
 
 ### Authentication (Portable - works anywhere)
 - **Email/Password**: bcrypt password hashing, Passport.js local strategy
