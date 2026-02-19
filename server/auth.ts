@@ -8,6 +8,7 @@ import bcrypt from "bcryptjs";
 import type { Express, RequestHandler } from "express";
 import { storage } from "./storage";
 import { type User } from "@shared/schema";
+import { env } from "./env";
 
 declare global {
   namespace Express {
@@ -25,26 +26,26 @@ export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   const pgStore = connectPg(session);
   const sessionStore = new pgStore({
-    conString: process.env.DATABASE_URL,
+    conString: env.databaseUrl,
     createTableIfMissing: false,
     ttl: sessionTtl,
     tableName: "sessions",
   });
   return session({
-    secret: process.env.SESSION_SECRET!,
+    secret: env.sessionSecret,
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: env.nodeEnv === "production",
       maxAge: sessionTtl,
     },
   });
 }
 
 export async function setupAuth(app: Express) {
-  app.set("trust proxy", 1);
+  app.set("trust proxy", env.trustProxy);
   app.use(getSession());
   app.use(passport.initialize());
   app.use(passport.session());
