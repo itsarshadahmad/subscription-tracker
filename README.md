@@ -1,6 +1,6 @@
 # SubTrack (Portable + Cloud Ready)
 
-SubTrack is a full-stack TypeScript app (React + Express + PostgreSQL) that runs locally and on most cloud providers without Replit-specific tooling.
+SubTrack is a full-stack TypeScript app (React + Express + PostgreSQL) that runs locally and on most cloud providers.
 
 ## Requirements
 
