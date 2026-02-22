@@ -1,13 +1,13 @@
-# SubTrack (Portable Deployment)
+# SubTrack (Portable + Cloud Ready)
 
-SubTrack is a full-stack TypeScript app (React + Express + PostgreSQL) that can run on any local environment and most cloud providers.
+SubTrack is a full-stack TypeScript app (React + Express + PostgreSQL) that runs locally and on most cloud providers.
 
 ## Requirements
 
 - Node.js 20+
 - PostgreSQL 14+
 
-## Quick Start (Local)
+## Quick Start (Localhost)
 
 1. Install dependencies:
 
@@ -21,58 +21,76 @@ npm install
 cp .env.example .env
 ```
 
-3. Fill in required environment variables:
+3. Set required values in `.env`:
 
 - `DATABASE_URL`
 - `SESSION_SECRET`
 
-4. Apply schema to your database:
+4. Apply database schema:
 
 ```bash
 npm run db:push
 ```
 
-5. Run development server:
+5. Start development server:
 
 ```bash
 npm run dev
 ```
 
-The app will be available at `http://localhost:5000` by default.
+App runs on `http://localhost:5000` by default.
 
-## Production
-
-Build and run:
+## Production (VM / PaaS)
 
 ```bash
 npm run build
 npm run start
 ```
 
-You can override the port with `PORT`.
+Set environment variables through your cloud provider dashboard or deployment config.
 
-## Cloud Hosting Notes
-
-This app is cloud-provider neutral. It works on platforms like Render, Railway, Fly.io, AWS, GCP, Azure, DigitalOcean, and others.
-
-Set these environment variables in your provider:
+## Environment Variables
 
 ### Required
 
 - `DATABASE_URL`: PostgreSQL connection string
-- `SESSION_SECRET`: Long random string
+- `SESSION_SECRET`: Long random secret string
 
 ### Optional
 
-- `PORT`: Server port (provider usually injects this)
-- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`: Enable Google OAuth
-- `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`: Enable GitHub OAuth
+- `PORT`: Defaults to `5000`
+- `NODE_ENV`: Defaults to `production` when running built output
+- `TRUST_PROXY`: Defaults to `1` (recommended behind load balancers)
+- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`: Optional Google OAuth
+- `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`: Optional GitHub OAuth
 
-## Container Deployment
+## Docker
 
-A production `Dockerfile` is included.
+Build and run locally:
 
 ```bash
 docker build -t subtrack .
 docker run --env-file .env -p 5000:5000 subtrack
+```
+
+The Docker image is multi-stage and uses `node:20-alpine` to keep runtime size smaller.
+
+## Kubernetes
+
+Kubernetes manifests are in `k8s/`:
+
+- `k8s/configmap.yaml`
+- `k8s/secret.example.yaml`
+- `k8s/deployment.yaml`
+- `k8s/service.yaml`
+- `k8s/ingress.yaml`
+
+Apply them (after updating image and host values):
+
+```bash
+kubectl apply -f k8s/configmap.yaml
+kubectl apply -f k8s/secret.example.yaml
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+kubectl apply -f k8s/ingress.yaml
 ```
