@@ -1,0 +1,6 @@
+![Landing Page](./screenshots/landing-page.png)
+![Signin Page](./screenshots/signin-page.png)
+![Dashboard Page](./screenshots/dashboard-page.png)
+![Dashboard Insights View](./screenshots/dashboard-insight-view.png)
+![Dashboard Calendar View](./screenshots/dashboard-calendar-view.png)
+![Settings Page](./screenshots/settings-page.png)
