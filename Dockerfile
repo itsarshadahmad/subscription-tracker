@@ -1,25 +1,40 @@
-FROM node:20-alpine AS deps
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
+# ---------- 1️⃣ Dependencies Stage ----------
+FROM node:lts-alpine3.23 AS deps
 
-FROM node:20-alpine AS build
 WORKDIR /app
+
+# Install dependencies
+COPY package*.json ./
+RUN npm install
+
+# ---------- 2️⃣ Build Stage ----------
+FROM node:lts-alpine3.23 AS build
+
+WORKDIR /app
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+# Build frontend/backend if using Vite/TS
 RUN npm run build
 
-FROM node:20-alpine AS runtime
+# ---------- 3️⃣ Production Runtime ----------
+FROM node:lts-alpine3.23 AS runtime
+
 WORKDIR /app
+
 ENV NODE_ENV=production
 
+# Copy only necessary files
 COPY package*.json ./
-RUN npm ci --omit=dev && npm cache clean --force
+RUN npm install --omit=dev && npm cache clean --force
 
 COPY --from=build /app/dist ./dist
 
-RUN addgroup -S app && adduser -S app -G app
-USER app
+# If using Prisma (uncomment if needed)
+# COPY --from=build /app/prisma ./prisma
+# RUN npx prisma generate
 
-EXPOSE 5000
-CMD ["node", "dist/index.cjs"]
+EXPOSE 3000
+
+CMD ["node", "dist/index.js"]
